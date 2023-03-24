@@ -1,0 +1,143 @@
+#####################################################
+# Load two topologies, each with a different        #
+# name handler depicted inside []                   #
+#####################################################
+parm ../Common/1bna_10A.hmr.top
+
+#####################################################
+# Load two different trajectories                   #
+# each with their respective topology.              #
+# Each trajectory is 10001 frames long, so          #
+# we will have a dataset of 20002 frames long,      #
+# the first 10001 frames correspond to the cpu      #
+# frames and the from 10002 to 20002, correspond    #
+# to the GPU frames.                                #
+#####################################################
+trajin imaged.nc
+
+#####################################################
+# Move and translate the coordinates so they will   #
+# fit as close as possible to the first frame.      #
+# Only fit residues 1 through 36 (the DNA)          #
+# and ignore everything that matches the atom 'H'   #
+# This means that no hydrogen atoms are going to be #
+# part of the fitting.                              #
+#####################################################
+rms first :1-758&!@H=
+
+#####################################################
+# Create an average structure considering all       #
+# the loaded frames and save it as a single frame   #
+# using the AMBER restart format                    #
+#####################################################
+average crdset cpu-gpu-average
+
+#####################################################
+# CPPTRAJ works with datasets of multiple formats   #
+# create a coordinate dataset that refers to the    #
+# loaded frames. Call the loaded frames             #
+# 'cpu-gpu-trajectories'                            #
+#####################################################
+createcrd cpu-gpu-trajectories
+
+#####################################################
+# Run the commands because we need our reference    #
+# structure. With the 'run' command, the            #
+# commands so far will run and will generate our    #
+# average reference structure with the AMBER        #
+# restart format                                    #
+#####################################################
+run
+
+#####################################################
+# Fit our frames, which we named:                   #
+# cpu-gpu-trajectories                              #
+# to the previously loaded average structure        #
+# Always use the same mask                          #
+#####################################################
+crdaction cpu-gpu-trajectories rms ref cpu-gpu-average :1-758&!@H=
+
+#####################################################
+# Calculate coordinate covariance matrix            #
+#####################################################
+crdaction cpu-gpu-trajectories matrix covar \
+name cpu-gpu-covar :1-758&!@H=
+
+#####################################################
+# Diagonalize coordinate covariance matrix          #
+# Get first 3 eigenvectors                          #
+#####################################################
+runanalysis diagmatrix cpu-gpu-covar out cpu-gpu-evecs.dat \
+vecs 3 name myEvecs \
+nmwiz nmwizvecs 3 nmwizfile dna.nmd nmwizmask :1-758&!@H=
+
+#####################################################
+# Now create separate projections                   #
+# for each set of trajectories                      #
+# More details: pag 610                             #
+#####################################################
+crdaction cpu-gpu-trajectories projection CPU modes myEvecs \
+beg 1 end 3 :1-758&!@H= crdframes 1,last
+#crdaction cpu-gpu-trajectories projection GPU modes myEvecs \
+#beg 1 end 3 :1-758&!@H= crdframes 10002,last
+
+#####################################################
+# Make a normalized histogram of the 3              #
+# calculated projections                            #
+# More details: pag 598                             #
+#####################################################
+
+#hist CPU:1 bins 100 out cpu-gpu-hist.agr norm name CPU-1
+#hist CPU:2 bins 100 out cpu-gpu-hist.agr norm name CPU-2
+#hist CPU:3 bins 100 out cpu-gpu-hist.agr norm name CPU-3
+
+#hist GPU:1 bins 100 out cpu-gpu-hist.agr norm name GPU-1
+#hist GPU:2 bins 100 out cpu-gpu-hist.agr norm name GPU-2
+#hist GPU:3 bins 100 out cpu-gpu-hist.agr norm name GPU-3
+
+#####################################################
+# Run the analysis                                  #
+# ** cross-fingers **                               #
+#####################################################
+
+run
+
+#####################################################
+#####################################################
+# DELETE EVERYTHING AND START FRESH                 #
+#####################################################
+#####################################################
+clear all
+
+
+#####################################################
+# Visualize the fluctuations of the eigenmodes      #
+# Read the file with the eigenvectores              #
+#####################################################
+readdata cpu-gpu-evecs.dat name Evecs
+
+
+#####################################################
+# Load a topology                                   #
+# This is necesary to create a new topology         #
+# that will match the read in eigenmodes
+#####################################################
+parm ../Common/1bna_10A.hmr.top
+parmstrip !(:1-758&!@H=)
+parmwrite out dna1.top
+
+#####################################################
+# Create a NetCDF trajectory file with the          #
+# modes of motion of the first PCA                  #
+#####################################################
+runanalysis modes name Evecs trajout cpu-gpu-mode1.nc \
+pcmin -100 pcmax 100 tmode 1 trajoutmask :1-758&!@H= trajoutfmt netcdf
+
+
+#####################################################
+# Now you can open the files:                       #
+# cpu-gpu-modes.prmtop                              #
+# cpu-gpu-modes.nc                                  #
+# in Chimera / VMD and watch the movie              #
+# which shows the first mode of motion              #
+#####################################################

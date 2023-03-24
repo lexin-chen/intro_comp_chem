@@ -1,0 +1,40 @@
+Warning: Assuming 'minimage.in' contains cpptraj input.
+
+CPPTRAJ: Trajectory Analysis. V4.25.6
+    ___  ___  ___  ___
+     | \/ | \/ | \/ | 
+    _|_/\_|_/\_|_/\_|_
+
+| Date/time: 11/11/21 14:26:38
+| Available memory: 2.084 TB
+
+INPUT: Reading input from 'minimage.in'
+  [parm ../Common/1bna_20A.hmr.top]
+	Reading '../Common/1bna_20A.hmr.top' as Amber Topology
+	Radius Set: modified Bondi radii (mbondi)
+  [trajin imaged.nc]
+	Reading 'imaged.nc' as Amber NetCDF
+  [image origin center]
+    IMAGE: By molecule to origin based on center of mass using all atoms
+  [minimage imagedist @CA,C,O,N,H @CA,C,O,N,H out minimagedist_20]
+    MINIMAGE: Looking for closest approach of atoms in @CA,C,O,N,H
+	to images of atoms in @CA,C,O,N,H
+---------- RUN BEGIN -------------------------------------------------
+
+PARAMETER FILES (1 total):
+ 0: 1bna_20A.hmr.top, 41522 atoms, 13664 res, box: Trunc. Oct., 13642 mol, 13562 solvent
+
+INPUT TRAJECTORIES (1 total):
+ 0: 'imaged.nc' is a NetCDF AMBER trajectory with coordinates, time, box, Parm 1bna_20A.hmr.top (Trunc. Oct. box) (reading 500 of 500)
+  Coordinate processing will occur on 500 frames.
+
+BEGIN TRAJECTORY PROCESSING:
+.....................................................
+ACTION SETUP FOR PARM '1bna_20A.hmr.top' (2 actions):
+  0: [image origin center]
+	Mask [*] corresponds to 41522 atoms.
+	Number of molecules to be imaged is 13642
+  1: [minimage imagedist @CA,C,O,N,H @CA,C,O,N,H out minimagedist_20]
+	@CA,C,O,N,H (13562 atoms) to @CA,C,O,N,H (13562 atoms)
+----- imaged.nc (1-500, 1) -----
+ 0% 

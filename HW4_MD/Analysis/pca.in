@@ -1,0 +1,25 @@
+parm ../Common/1bna_10A.hmr.top
+#trajin ../Scripts/md.nc
+trajin imaged.nc
+rms first :1-758&!@H=
+average crdset average.crd
+createcrd trajectory.mdcrd
+run
+
+crdaction trajectory.mdcrd rms ref average.crd :1-758&!H=
+
+crdaction tajectory.mdcrd matrix covar \
+name covar0 :1-758&!@H=
+
+runanalysis diagmatrix covar out evecs.dat \
+#rm ../Common/1bna_10A.hmr.top../Common/1bna_10A.hmr.topSBATCH --qos=colina
+vecs 3 name myEvecs \
+nmwiz nmwizvecs 3 nmwizfile dna.nmd nmwizmask :1-758&!@H=
+
+crdaction cpu-gpu-trajectories projection CPU modes myEvecs \
+beg 1 end 3 :1-36&!@H= crdframes 1,10001
+crdaction cpu-gpu-trajectories projection GPU modes myEvecs \
+beg 1 end 3 :1-36&!@H= crdframes 10002,last
+
+
+

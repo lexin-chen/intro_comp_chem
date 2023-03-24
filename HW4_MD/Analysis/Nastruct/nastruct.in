@@ -1,0 +1,4 @@
+parm ../Common/1bna_10A.hmr.top
+trajin ../Scripts/md.nc
+autoimage
+nastruct naout nastruct.dat resrange 1-24

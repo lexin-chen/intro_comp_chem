@@ -1,0 +1,4 @@
+parm ../Common/1bna_10A.hmr.top
+trajin ../Scripts/md.nc
+
+radgyr ToFirst @CA,C,O,N,H out rg_10A.dat mass nomax

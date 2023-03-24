@@ -1,0 +1,4 @@
+parm ../Common/1bna_10A.hmr.top
+#trajin ../Scripts/md.nc
+trajin imaged.nc
+rmsd ToFirst @1-758 out rmsd_10A.dat

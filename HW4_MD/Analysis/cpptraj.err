@@ -1,0 +1,12 @@
+GPU Driver '450' detected
+
+Lmod is automatically replacing "gcc/9.3.0" with "nvhpc/20.11".
+
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) amber/20
+
+The following have been reloaded with a version change:
+  1) cuda/11.0.207 => cuda/11.1.0
+
+slurmstepd: error: *** JOB 11679355 ON c1000a-s23 CANCELLED AT 2021-11-11T14:28:04 ***

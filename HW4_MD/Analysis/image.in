@@ -1,0 +1,7 @@
+parm ../Common/1bna_10A.hmr.top
+trajin ../DNA_10A/md.nc
+autoimage
+image origin center
+rmsd @CA,C,N out rmsd.dat
+trajout imaged.nc
+

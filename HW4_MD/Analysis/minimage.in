@@ -1,0 +1,6 @@
+parm ../Common/1bna_20A.hmr.top
+trajin imaged.nc 1 last 1000
+
+image origin center
+ 
+minimage imagedist @CA,C,O,N,H @CA,C,O,N,H out minimagedist_20
